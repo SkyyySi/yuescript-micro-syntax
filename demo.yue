@@ -1,0 +1,98 @@
+x = {
+	<name>: "Mr. x"
+
+	--- Invalid metatable events get highlighted as errors
+	<foobar>: ":("
+
+	--- Class fields (`@@field`) and class instance fields (`@field`)
+	--- get highlighted separately; `.`, `::` and `\` are also highlighted
+	<call>: () => @@.p(@get_name!)
+
+	p: (x) -> print(x)
+
+	get_name: () => @name
+}
+
+y = {
+	--- The metatable-access operator also gets highlighted
+	<>: {
+		--- Metatable keys are highlighted separately...
+		__call: (x) => "Yes"
+
+		--- ... as are `_private` and `__private` ...
+		__private: _private
+
+		--- ... and special fields of yuescript classes ...
+		--- (ah, and notice how PascalCased vairables are highlighted as class names)
+		stolen_init = SomeClass.__init
+
+		--- ... but not other "dunder" fields
+		__foobar: ":("
+	}
+}
+
+--- Strings generally don't mess up the highlighing of operators (unlike how the default
+--- Lua highlighting file does)
+print("Hello " .. 'world!')
+
+{:a, :b} = { "foo", "bar" }
+
+readable_number = 123_456_789
+
+local  loc = "I am local"
+global GLO = "I am global"
+const  CON = "I am constant"
+
+goto jmp
+::jmp::
+
+class Man
+	new: (name) =>
+		@_name = name
+
+	introduce: () =>
+		--- Syntax highlighting also works within string interpolation (at least, to an extend;
+		--- notabliy, having table brackets within it will mess it up)
+		"Hello, my name is #{'Mr. ' .. @@_name}. Nice to meet you!"
+
+--- Lua-language-server-style annotations also have basic support
+---@alias x y # Foo bar
+
+x = [ i for i = 1, 10 ]
+
+--- When using either `load()` or `$EVAL()` to evaluate code, it
+--- will be highlighted.
+lua = load("function()
+	--- This is still a string, so you can interpolate into it!
+	return (#{readable_number} + 1)
+end")
+
+--- If you have a `$SHELL()` macro, it will be highlighted as Bash/POSIX syntax
+macro SHELL = (cmd) -> cmd
+
+compile_script = $SHELL([===[
+# Compile this file to Lua
+FILE="demo.yue"
+
+if [[ -f $FILE ]]; then
+	yue -m "$FILE"
+fi
+]===])
+
+--- If you have a `$JSON()` macro, it will be highlighted as JSON
+macro JSON = (json) -> json
+
+data = $JSON([===[
+{
+	"x": 436,
+	"funnyNumber": 420.69
+	"vector": [ 23, 57, 44 ]
+}
+]===])
+
+assert ""\sub(1, 1)  ~= x
+assert(""::sub(1, 1) != x)
+
+function you_cannot_use_these_keywords_in_yuescript()
+	-- ...
+end
