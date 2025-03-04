@@ -1,4 +1,4 @@
-filetype: yuescript
+filetype: "yuescript"
 
 detect:
     filename: "\\.yue$"
@@ -32,13 +32,10 @@ rules:
     - special: "\\b(super)\\b"
     - special: "\\b(self|cls)\\b"
 
-    # It's a convention in Lua to use these for table arguments
-    - special: "\\b(opts|args)\\b"
-
-    # `function` and `end` cannot be used as keywords or variables names,
-    # but they *are* allowed when used as table keys.
-    - error:   "\\b(function|end)\\b"
-    - default: "\\b(function|end)\\s*:"
+    ## `function` and `end` cannot be used as keywords or variables names,
+    ## but they *are* allowed when used as table keys.
+    #- error:   "\\b(function|end)\\b"
+    #- default: "\\b(function|end)\\s*:"
 
     - symbol.brackets: "[(){}\\[\\]]"
     - symbol.operator: "(\\*|//|/|%|\\+|-|>|>=|<|<=|~=|!=|!|=|[\\.]{2,3}|#|->|=>|<-|[:]{1,2}|\\?{1,2}|\\|\\>)"
@@ -46,7 +43,8 @@ rules:
 
     # Yuescript only allows the metatable events recognized by Lua itself (see https://lua-users.org/wiki/MetatableEvents)
     # when using angle brackets, everything else causes an error. Note that `<>` on its own is allowed.
-    - error: "\\<.*?\\>"
+    # You may also put string literals in there.
+    - error: "\\<[^\"'\\[].*\\>"
     - symbol.tag: "\\<(|index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\>"
 
     - constant.number: "\\b((0[xX](([0-9A-Fa-f][0-9A-Fa-f_]*\\.([0-9A-Fa-f][0-9A-Fa-f_]*|))|(\\.?[0-9A-Fa-f_]+))([pP][-+]?[0-9_]+)?)|((([0-9][0-9_]*\\.([0-9][0-9_]*|))|(\\.?([0-9][0-9_]*|)))([eE][-+]?([0-9][0-9_]*|))?))"    
