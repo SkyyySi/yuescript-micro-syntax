@@ -1,0 +1,68 @@
+import "yue"
+
+const pretty = (object) ->
+	const type_of_object = type(object)
+
+	(switch type_of_object
+		when "string"
+			"\027[33m" .. ("%q"::format(object)::gsub("\\\n", "\\n")) .. "\027[39m"
+		when "number"
+			"\027[34m%.15g\027[39m"::format(object)
+		when "boolean"
+			if object
+				"\027[1;32mtrue\027[22;39m"
+			else
+				"\027[1;31mtrue\027[22;39m"
+		when "nil"
+			"\027[3;35mnil\027[23;39m"
+		else
+			error("Unsupported type #{type_of_object}")
+	) .. "\027[2m: #{type_of_object}\027[22m"
+
+const parse = (source_code) ->
+	assert(type(source_code) == "string")
+
+	assert(yue.to_ast(source_code))
+
+const get_indent = (depth=0) ->
+	if depth < 1
+		""
+	else
+		--"    " .. table.concat(["\027[2;3#{(i + 6) % 8}m|\027[22;39m   " for i = 1, (depth - 1)])
+		"    \027[2m" .. "|   "::rep(depth - 1) .. "\027[22m"
+
+const print_node = (node, depth=0) ->
+	if type(node) != "table"
+		print(get_indent(depth) .. pretty(node))
+		return
+
+	const [name, start, stop] = node
+	const children = [node[i] for i = 4, #node]
+
+	print("%s\027[0;%sm%s\027[0m[\027[34m%d\027[39m, \027[36m%d\027[39m]\027[0m"::format(
+		get_indent(depth),
+		--(depth + 6) % 7,
+		"#{(name::byte() % 2 == 0) and '1;' or ''}#{30 + (7 - (#name % 7))}",
+		name,
+		start,
+		stop,
+	))
+
+	for child in *children
+		print_node(child, depth + 1)
+
+const main = () ->
+	const test_source = [===[
+const x = "#{foo}bar"
+
+global y = {
+	hello: "world"
+}
+]===]
+
+	const ast, err = parse(test_source)
+
+	print_node(ast)
+
+if select("#", ...) == 0
+	main()

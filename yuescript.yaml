@@ -9,6 +9,7 @@ rules:
     - identifier: "\\bgoto\\s+[a-zA-Z_][a-zA-Z0-9_]*\\b"
     - identifier: "::[a-zA-Z_][a-zA-Z0-9_]*::"
     - statement: "\\b(do|while|break|repeat|until|if|elseif|then|else|for|in|return|goto)\\b"
+    - statement: "\\b(unless|import|export|as|from|try|catch|macro|class|extends|using|with|switch|when)\\b"
     - symbol.operator: "\\b(not|and|or)\\b"
     - identifier: "\\b(debug|string|math|table|io|coroutine|os|utf8|bit32)\\b"
     - identifier: "\\b(_ENV|_G|_VERSION|assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadfile|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|xpcall)\\b"
@@ -26,9 +27,8 @@ rules:
     - constant: "\\b(false|nil|true)\\b"
     - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
     - type.keyword: "\\b(close|const|global|local)\\b" # Variable declarations
-    - statement: "\\b(unless|import|export|as|from|try|catch|macro|class|extends|using|with|switch|when)\\b"
     - identifier.class: "\\b[A-Z][a-zA-Z]*\\b"
-    - constant: "\\b[A-Z_]*\\b"
+    - constant: "\\b[A-Z_]{2,}\\b"
     - special: "\\b(super)\\b"
     - special: "\\b(self|cls)\\b"
 
