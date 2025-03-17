@@ -1,8 +1,18 @@
+#!/usr/bin/env yue
+
+null = nil
+boolean = true or false
+number = 10e+10
+string = "Hello!"
+table = { [123]: "abc" }
+func = () -> nil
+thread = coroutine.create((...) -> ...)
+
 x = {
 	<name>: "Mr. x"
 
 	--- Invalid metatable events get highlighted as errors
-	<foobar>: ":("
+	<foobar>: ':('
 
 	--- Class fields (`@@field`) and class instance fields (`@field`)
 	--- get highlighted separately; `.`, `::` and `\` are also highlighted
@@ -19,10 +29,7 @@ y = {
 		--- Metatable keys are highlighted separately...
 		__call: (x) => "Yes"
 
-		--- ... as are `_private` and `__private` ...
-		__private: _private
-
-		--- ... and special fields of yuescript classes ...
+		--- ... as are special fields of yuescript classes ...
 		--- (ah, and notice how PascalCased vairables are highlighted as class names)
 		stolen_init = SomeClass.__init
 
@@ -35,17 +42,44 @@ y = {
 --- Lua highlighting file does)
 print("Hello " .. 'world!')
 
+foo::bar!
+
 {:a, :b} = { "foo", "bar" }
+[x, y] = ["biz", "baz"]
 
 readable_number = 123_456_789
+
+for k, v in _G.pairs({ "first", "second", "thrid" })
+	print(k, v)
 
 local  loc = "I am local"
 global GLO = "I am global"
 const  CON = "I am constant"
+class  Foo
 
 goto jmp
 ::jmp::
 
+f = (x, y, z, ...) -> print(select("#", ...))
+
+x.<"foo">
+
+--[[
+Multi-line comment
+]]
+
+-- Not valid!
+....
+function
+end
+<bruh>
+10number_with_illeal_suffix
+
+table =
+	function: "foo"
+	end: "bar"
+
+---@class Man asdf
 class Man
 	new: (name) =>
 		@_name = name
@@ -56,41 +90,11 @@ class Man
 		"Hello, my name is #{'Mr. ' .. @@_name}. Nice to meet you!"
 
 --- Lua-language-server-style annotations also have basic support
----@alias x y # Foo bar
+---@alias x y -- Foo bar
 
 x = [ i for i = 1, 10 ]
 
---- When using either `load()` or `$EVAL()` to evaluate code, it
---- will be highlighted.
-lua = load("function()
-	--- This is still a string, so you can interpolate into it!
-	return (#{readable_number} + 1)
-end")
-
---- If you have a `$SHELL()` macro, it will be highlighted as Bash/POSIX syntax
-macro SHELL = (cmd) -> cmd
-
-compile_script = $SHELL([===[
-# Compile this file to Lua
-FILE="demo.yue"
-
-if [[ -f $FILE ]]; then
-	yue -m "$FILE"
-fi
-]===])
-
---- If you have a `$JSON()` macro, it will be highlighted as JSON
-macro JSON = (json) -> json
-
-data = $JSON([===[
-{
-	"x": 436,
-	"funnyNumber": 420.69
-	"vector": [ 23, 57, 44 ]
-}
-]===])
-
-assert ""\sub(1, 1)  ~= x
+assert ""\sub(1, 1) ~= x
 assert(""::sub(1, 1) != x)
 
 function you_cannot_use_these_keywords_in_yuescript()

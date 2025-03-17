@@ -5,59 +5,63 @@ detect:
     header: "#!.*yue$"
 
 rules:
-    - constant.number: "\\b((0[xX](([0-9A-Fa-f][0-9A-Fa-f_]*\\.([0-9A-Fa-f][0-9A-Fa-f_]*|))|(\\.?[0-9A-Fa-f_]+))([pP][-+]?[0-9_]+)?)|((([0-9][0-9_]*\\.([0-9][0-9_]*|))|(\\.?([0-9][0-9_]*|)))([eE][-+]?([0-9][0-9_]*|))?))"    
-
-    - constant: "\\bnew\\s*:" # Initializer for classes
-    - identifier: "\\bgoto\\s+[a-zA-Z_][a-zA-Z0-9_]*\\b"
-    - identifier: "::[a-zA-Z_][a-zA-Z0-9_]*::"
-    - statement: "\\b(do|while|break|repeat|until|if|elseif|then|else|for|in|return|goto)\\b"
-    - statement: "\\b(unless|import|export|as|from|try|catch|macro|class|extends|using|with|switch|when)\\b"
-    - symbol.operator: "\\b(not|and|or)\\b"
-    - identifier: "\\b(debug|string|math|table|io|coroutine|os|utf8|bit32)\\b"
-    - identifier: "\\b(_ENV|_G|_VERSION|assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadfile|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|xpcall)\\b"
-    - identifier: "io\\.\\b(close|flush|input|lines|open|output|popen|read|tmpfile|type|write)\\b"
-    - identifier: "math\\.\\b(abs|acos|asin|atan2|atan|ceil|cosh|cos|deg|exp|floor|fmod|frexp|huge|ldexp|log10|log|max|maxinteger|min|mininteger|modf|pi|pow|rad|random|randomseed|sin|sqrt|tan|tointeger|type|ult)\\b"
-    - identifier: "os\\.\\b(clock|date|difftime|execute|exit|getenv|remove|rename|setlocale|time|tmpname)\\b"
-    - identifier: "package\\.\\b(config|cpath|loaded|loadlib|path|preload|seeall|searchers|searchpath)\\b"
-    - identifier: "string\\.\\b(byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
-    - identifier: "table\\.\\b(concat|insert|maxn|move|pack|remove|sort|unpack)\\b"
-    - identifier: "utf8\\.\\b(char|charpattern|codes|codepoint|len|offset)\\b"
-    - identifier: "coroutine\\.\\b(create|isyieldable|resume|running|status|wrap|yield)\\b"
-    - identifier: "debug\\.\\b(debug|getfenv|gethook|getinfo|getlocal|getmetatable|getregistry|getupvalue|getuservalue|setfenv|sethook|setlocal|setmetatable|setupvalue|setuservalue|traceback|upvalueid|upvaluejoin)\\b"
-    - identifier: "bit32\\.\\b(arshift|band|bnot|bor|btest|bxor|extract|replace|lrotate|lshift|rrotate|rshift)\\b"
-    - identifier: "(\\.|::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
-    - constant.bool.true: "\\btrue\\b"
-    - constant.bool.false: "\\bnull\\b"
-    - constant: "\\b(nil)\\b"
-    - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
-    - type.keyword: "\\b(close|const|global|local)\\b" # Variable declarations
-    - identifier.class: "\\b[A-Z][a-zA-Z]*\\b"
-    - constant: "\\b[A-Z_]{2,}\\b"
-    - special: "\\b(super)\\b"
-    - special: "\\b(self|cls)\\b"
-
-    ## `function` and `end` cannot be used as keywords or variables names,
-    ## but they *are* allowed when used as table keys.
-    #- error:   "\\b(function|end)\\b"
-    #- default: "\\b(function|end)\\s*:"
+    - error: "\\b([0-9][a-zA-Z0-9_]*)\\b"
 
     - symbol.brackets: "[(){}\\[\\]]"
-    - symbol.operator: "(\\^|\\*|//|/|%|\\+|-|>|>=|<|<=|~=|!=|!|=|[\\.]{2,3}|#|->|=>|<-|[:]{1,2}|\\?{1,2}|\\|\\>)"
-    #- symbol.operator: "\\^" # For some reason, it causes issues to have this in the pattern above
+    - symbol.operator: "(\\^|\\*|//|/|%|\\+|\\-|\\>|\\>=|\\<|\\<=|\\~=|\\!=|\\!|=|\\.{2}|#|-\\>|=\\>|\\<-|:|\\?{1,2}|\\|\\>)"
+    - symbol.constant: "\\.{3}"
+    - error: "\\.{4,}"
+
+    - constant.number: "\\b((0[xX](([0-9A-Fa-f][0-9A-Fa-f_]*\\.([0-9A-Fa-f][0-9A-Fa-f_]*|))|(\\.?[0-9A-Fa-f_]+))([pP][-+]?[0-9_]+)?)|((([0-9][0-9_]*\\.([0-9][0-9_]*|))|(\\.?([0-9][0-9_]*|)))([eE][-+]?([0-9][0-9_]*|))?))\\b"
+
+    - identifier.var: "\\b[a-zA-Z_]([a-zA-Z0-9_]+|::|\\.|\\\\)*\\b"
+
+    # `function` and `end` cannot be used as keywords or variables names,
+    # but they *are* allowed when used as table keys.
+    - error: "(^|[^\\.:\\\\])\\b(function|end)\\b\\s*([^:]|$)"
+
+    - constant: "\\bnew\\b\\s*:"
+    - identifier: "\\bgoto\\b\\s+\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b"
+    - identifier: "::\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b::"
+    - identifier.class: "\\b([A-Z][a-zA-Z0-9]*)\\b"
+    - constant: "\\b[A-Z_][A-Z0-9_]*\\b"
+    - constant: "(\\b_G\\b\\.)?\\b(_ENV|_G|_VERSION|assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadstring|loadfile|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|xpcall|newproxy|gcinfo)\\b"
+    - constant: "(\\b_G\\b\\.)?\\b(debug|string|math|table|io|coroutine|os|package|utf8|bit32)\\b"
+    - constant: "(\\b_G\\b\\.)?\\bdebug\\b\\.\\b(debug|getfenv|gethook|getinfo|getlocal|getmetatable|getregistry|getupvalue|getuservalue|setfenv|sethook|setlocal|setmetatable|setupvalue|setuservalue|traceback|upvalueid|upvaluejoin)\\b"
+    - constant: "(\\b_G\\b\\.)?\\bstring\\b\\.\\b(byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
+    - constant: "(\\b_G\\b\\.)?\\bmath\\b\\.\\b(abs|acos|asin|atan2|atan|ceil|cosh|cos|deg|exp|floor|fmod|frexp|huge|ldexp|log10|log|max|maxinteger|min|mininteger|modf|pi|pow|rad|random|randomseed|sin|sqrt|tan|tointeger|type|ult)\\b"
+    - constant: "(\\b_G\\b\\.)?\\btable\\b\\.\\b(concat|insert|maxn|move|pack|remove|sort|unpack)\\b"
+    - constant: "(\\b_G\\b\\.)?\\bio\\b\\.\\b(close|flush|input|lines|open|output|popen|read|tmpfile|type|write)\\b"
+    - constant: "(\\b_G\\b\\.)?\\bcoroutine\\b\\.\\b(create|isyieldable|resume|running|status|wrap|yield)\\b"
+    - constant: "(\\b_G\\b\\.)?\\bos\\b\\.\\b(clock|date|difftime|execute|exit|getenv|remove|rename|setlocale|time|tmpname)\\b"
+    - constant: "(\\b_G\\b\\.)?\\bpackage\\b\\.\\b(config|cpath|loaded|loadlib|path|preload|seeall|searchers|searchpath)\\b"
+    - constant: "\\butf8\\b\\.\\b(char|charpattern|codes|codepoint|len|offset)\\b"
+    - constant: "\\bbit32\\b\\.\\b(arshift|band|bnot|bor|btest|bxor|extract|replace|lrotate|lshift|rrotate|rshift)\\b"
+    - constant: "(::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
+    - statement: "\\b(do|while|break|repeat|until|if|elseif|then|else|for|in|return|goto)\\b"
+    - statement: "\\b(unless|import|export|as|from|try|catch|extends|using|with|switch|when)\\b"
+    - type.keyword: "\\b(class|close|const|global|local|macro)\\b"
+    - symbol.operator: "\\b(not|and|or)\\b"
+    - constant.bool.true: "\\b(true)\\b"
+    - constant.bool.false: "\\b(false)\\b"
+    - constant: "\\bnil\\b"
+    - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
+    - special: "\\b(super|self|cls)\\b"
 
     # Yuescript only allows the metatable events recognized by Lua itself (see https://lua-users.org/wiki/MetatableEvents)
     # when using angle brackets, everything else causes an error. Note that `<>` on its own is allowed.
-    ## You may also put string literals in there.
-    - error: "\\<[^\"'\\[].*?\\>"
-    - symbol.tag: "\\<(|index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\>"
+    # You may also put string literals in there.
+    - symbol.tag:
+        start: "\\<"
+        end: "\\>"
+        rules:
+            - error: "^[^\"'\\[].*$"
+            - symbol.tag: "\\b(index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b"
 
     - identifier.macro: "\\$\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
-    - identifier: "@(\\.|\\:\\:|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*" # self
-    - identifier: "@"
-    - constant: "@@(\\.|\\:\\:|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*" # self.__class
-    - constant: "@@"
-    - error: "@@@+(\\.|\\:\\:|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*"
-    - error: "@@@+"
+    - identifier: "@((\\.|::|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*)?" # self
+    - constant:  "@@((\\.|::|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*)?" # self.__class
+    - error:   "@@@+((\\.|::|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*)?"
 
     # Special fileds of classes
     - special: "\\b__(init|class|base|name|parent)\\b"
@@ -65,26 +69,17 @@ rules:
     # Metatable keys
     - special: "\\b__(index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b"
 
-    # It's a convention to use a table caleld _private or __private
-    # to store private/internal data
-    - special: "\\b(_|__)private\\b"
-
     - constant.string:
         start: "\""
         end: "\""
         skip: "\\\\."
         rules:
             - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            #- constant.string: "#\\{\\}"
             - identifier: "#\\{.+?\\}"
-            #       - start: "#\\{"
-            #       - end: "\\}"
-            #       - rules:
-            #             - normal: ".*?"
 
     - constant.string:
-        start: "\'"
-        end: "\'"
+        start: "'"
+        end: "'"
         skip: "\\\\."
         rules:
             - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
@@ -93,9 +88,6 @@ rules:
         start: "\\[\\["
         end: "\\]\\]"
         rules: []
-
-# support first few lengths of "long brackets" explicitly
-# brackets longer than that will give false positives
 
     - constant.string:
         start: "\\[=\\["
@@ -117,270 +109,29 @@ rules:
         end: "\\]====+\\]"
         rules: []
 
-
-    # Highlight inlined Lua code when using `load()`
-    - default:
-        start: "load\\s*\\(?\""
-        end: "\"\\)?"
-        rules:
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - include: "lua"
-            - underline: "#{.*?}"
-
-    - default:
-        start: "load\\s*\\(?\'"
-        end: "\'\\)?"
-        rules:
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - include: "lua"
-
-    - default:
-        start: "load\\s*\\(?\\[\\["
-        end: "\\]\\]\\)?"
-        rules:
-            - include: "lua"
-
-    - default:
-        start: "load\\s*\\(?\\[=\\["
-        end: "\\]=\\]\\)?"
-        rules:
-            - include: "lua"
-
-    - default:
-        start: "load\\s*\\(?\\[==\\["
-        end: "\\]==\\]\\)?"
-        rules:
-            - include: "lua"
-
-    - default:
-        start: "load\\s*\\(?\\[===\\["
-        end: "\\]===\\]\\)?"
-        rules:
-            - include: "lua"
-
-    - default:
-        start: "load\\s*\\(?\\[====\\["
-        end: "\\]====\\]\\)?"
-        rules:
-            - include: "lua"
-
-    - default:
-        start: "load\\s*\\(?\\[=====+\\["
-        end: "\\]=====+\\]\\)?"
-        rules:
-            - include: "lua"
-
-
-    # Highlight inlined Shell/Bash code when using `$SHELL()`
-    # Note: this is not build in, it needs to be user-defined
-    - default:
-        start: "\\$SHELL\\s*\\(?\""
-        end: "\"\\)?"
-        rules:
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - include: "shell"
-            - underline: "#{.*?}"
-
-    - default:
-        start: "\\$SHELL\\s*\\(?\'"
-        end: "\'\\)?"
-        rules:
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - include: "shell"
-
-    - default:
-        start: "\\$SHELL\\s*\\(?\\[\\["
-        end: "\\]\\]\\)?"
-        rules:
-            - include: "shell"
-
-    - default:
-        start: "\\$SHELL\\s*\\(?\\[=\\["
-        end: "\\]=\\]\\)?"
-        rules:
-            - include: "shell"
-
-    - default:
-        start: "\\$SHELL\\s*\\(?\\[==\\["
-        end: "\\]==\\]\\)?"
-        rules:
-            - include: "shell"
-
-    - default:
-        start: "\\$SHELL\\s*\\(?\\[===\\["
-        end: "\\]===\\]\\)?"
-        rules:
-            - include: "shell"
-
-    - default:
-        start: "\\$SHELL\\s*\\(?\\[====\\["
-        end: "\\]====\\]\\)?"
-        rules:
-            - include: "shell"
-
-    - default:
-        start: "\\$SHELL\\s*\\(?\\[=====+\\["
-        end: "\\]=====+\\]\\)?"
-        rules:
-            - include: "shell"
-
-
-    # Highlight inlined SQL code when using `$SQL()`
-    # Note: this is not build in, it needs to be user-defined
-    - default:
-        start: "\\$SQL\\s*\\(?\""
-        end: "\"\\)?"
-        rules:
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - include: "sql"
-            - underline: "#{.*?}"
-
-    - default:
-        start: "\\$SQL\\s*\\(?\'"
-        end: "\'\\)?"
-        rules:
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - include: "sql"
-
-    - default:
-        start: "\\$SQL\\s*\\(?\\[\\["
-        end: "\\]\\]\\)?"
-        rules:
-            - include: "sql"
-
-    - default:
-        start: "\\$SQL\\s*\\(?\\[=\\["
-        end: "\\]=\\]\\)?"
-        rules:
-            - include: "sql"
-
-    - default:
-        start: "\\$SQL\\s*\\(?\\[==\\["
-        end: "\\]==\\]\\)?"
-        rules:
-            - include: "sql"
-
-    - default:
-        start: "\\$SQL\\s*\\(?\\[===\\["
-        end: "\\]===\\]\\)?"
-        rules:
-            - include: "sql"
-
-    - default:
-        start: "\\$SQL\\s*\\(?\\[====\\["
-        end: "\\]====\\]\\)?"
-        rules:
-            - include: "sql"
-
-    - default:
-        start: "\\$SQL\\s*\\(?\\[=====+\\["
-        end: "\\]=====+\\]\\)?"
-        rules:
-            - include: "sql"
-
-    # Highlight inlined JSON code when using `$JSON()`
-    # Note: this is not build in, it needs to be user-defined
-    - default:
-        start: "\\$JSON\\s*\\(?\""
-        end: "\"\\)?"
-        rules:
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - include: "json"
-            - underline: "#{.*?}"
-
-    - default:
-        start: "\\$JSON\\s*\\(?\'"
-        end: "\'\\)?"
-        rules:
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - include: "json"
-
-    - default:
-        start: "\\$JSON\\s*\\(?\\[\\["
-        end: "\\]\\]\\)?"
-        rules:
-            - include: "json"
-
-    - default:
-        start: "\\$JSON\\s*\\(?\\[=\\["
-        end: "\\]=\\]\\)?"
-        rules:
-            - include: "json"
-
-    - default:
-        start: "\\$JSON\\s*\\(?\\[==\\["
-        end: "\\]==\\]\\)?"
-        rules:
-            - include: "json"
-
-    - default:
-        start: "\\$JSON\\s*\\(?\\[===\\["
-        end: "\\]===\\]\\)?"
-        rules:
-            - include: "json"
-
-    - default:
-        start: "\\$JSON\\s*\\(?\\[====\\["
-        end: "\\]====\\]\\)?"
-        rules:
-            - include: "json"
-
-    - default:
-        start: "\\$JSON\\s*\\(?\\[=====+\\["
-        end: "\\]=====+\\]\\)?"
-        rules:
-            - include: "json"
-
-
     - comment.block:
         start: "\\-\\-\\[\\["
         end: "\\]\\]"
         rules:
             - todo: "(TODO|NOTE|FIXME):?"
 
-# support long brackets, same as with multiline strings
-
-    - comment.block:
-        start: "\\-\\-\\[=\\["
-        end: "\\]=\\]"
-        rules:
-            - todo: "(TODO|NOTE|FIXME):?"
-
-    - comment.block:
-        start: "\\-\\-\\[==\\["
-        end: "\\]==\\]"
-        rules:
-            - todo: "(TODO|NOTE|FIXME):?"
-
-    - comment.block:
-        start: "\\-\\-\\[===\\["
-        end: "\\]===\\]"
-        rules:
-            - todo: "(TODO|NOTE|FIXME):?"
-
-    - comment.block:
-        start: "\\-\\-\\[====+\\["
-        end: "\\]====+\\]"
-        rules:
-            - todo: "(TODO|NOTE|FIXME):?"
-
-    - comment.shebang: "^#!.*/(env +)?yue( |$)"
-
-# this has to go after block comment or block comment does not work
+    - comment.shebang: "^#!.*/(env[ \t]+)?yue[ \t]*$"
 
     # Doc comments (for lua-language-server https://github.com/LuaLS/lua-language-server)
     # @(alias|as|async|cast|class|deprecated|diagnostic|enum|field|generic|meta|module|nodiscard|operator|overload|package|param|private|protected|return|see|source|type|vararg|version)
-    - comment: 
-        start: "\\-\\-\\-@"
+    - comment.bright:
+        start: "(^|[^\\-])\\-\\-\\-@"
         end: "$"
         rules:
             - error: "[a-zA-Z_][a-zA-Z0-9_]*"
-            - identifier: "(alias|as|async|cast|class|deprecated|diagnostic|enum|field|generic|meta|module|nodiscard|operator|overload|package|param|private|protected|return|see|source|type|vararg|version).*"
-            - statement:  "(alias|as|async|cast|class|deprecated|diagnostic|enum|field|generic|meta|module|nodiscard|operator|overload|package|param|private|protected|return|see|source|type|vararg|version)"
-            - comment: "#.*"
+            - statement:
+                start: "\\b(alias|as|async|cast|class|deprecated|diagnostic|enum|field|generic|meta|module|nodiscard|operator|overload|package|param|private|protected|return|see|source|type|vararg|version)\\b"
+                end: "$"
+                rules:
+                    - normal: "."
+            - comment: "\\-\\-.*"
 
-    # Regular comments
-    - comment: 
+    - comment:
         start: "\\-\\-"
         end: "$"
         rules:
