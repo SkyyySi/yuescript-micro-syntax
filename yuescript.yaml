@@ -25,7 +25,9 @@ rules:
     - identifier: "coroutine\\.\\b(create|isyieldable|resume|running|status|wrap|yield)\\b"
     - identifier: "debug\\.\\b(debug|getfenv|gethook|getinfo|getlocal|getmetatable|getregistry|getupvalue|getuservalue|setfenv|sethook|setlocal|setmetatable|setupvalue|setuservalue|traceback|upvalueid|upvaluejoin)\\b"
     - identifier: "bit32\\.\\b(arshift|band|bnot|bor|btest|bxor|extract|replace|lrotate|lshift|rrotate|rshift)\\b"
-    - identifier: "(::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
+    - identifier: "(\\.|::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
+    - constant.bool.true: "\\btrue\\b"
+    - constant.bool.false: "\\bnull\\b"
     - constant: "\\b(false|nil|true)\\b"
     - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
     - type.keyword: "\\b(close|const|global|local)\\b" # Variable declarations
@@ -46,7 +48,7 @@ rules:
     # Yuescript only allows the metatable events recognized by Lua itself (see https://lua-users.org/wiki/MetatableEvents)
     # when using angle brackets, everything else causes an error. Note that `<>` on its own is allowed.
     ## You may also put string literals in there.
-    #- error: "\\<[^\"'\\[].*\\>"
+    - error: "\\<[^\"'\\[].*?\\>"
     - symbol.tag: "\\<(|index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\>"
 
     - identifier.macro: "\\$\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
