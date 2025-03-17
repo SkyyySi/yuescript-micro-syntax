@@ -73,81 +73,12 @@ rules:
         skip: "\\\\."
         rules:
             - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-            - constant.string: "#{}"
-            - identifier:
-                start: "#{"
-                end: "}"
-                rules:
-                    - normal:
-                        start: ""
-                        end: "$"
-                        rules:
-                            - constant: "\\bnew\\s*:" # Initializer for classes
-                            - identifier: "\\bgoto\\s+[a-zA-Z_][a-zA-Z0-9_]*\\b"
-                            - identifier: "::[a-zA-Z_][a-zA-Z0-9_]*::"
-                            - statement: "\\b(do|while|break|repeat|until|if|elseif|then|else|for|in|return|goto)\\b"
-                            - symbol.operator: "\\b(not|and|or)\\b"
-                            - identifier: "\\b(debug|string|math|table|io|coroutine|os|utf8|bit32)\\b"
-                            - identifier: "\\b(_ENV|_G|_VERSION|assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadfile|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|xpcall)\\b"
-                            - identifier: "io\\.\\b(close|flush|input|lines|open|output|popen|read|tmpfile|type|write)\\b"
-                            - identifier: "math\\.\\b(abs|acos|asin|atan2|atan|ceil|cosh|cos|deg|exp|floor|fmod|frexp|huge|ldexp|log10|log|max|maxinteger|min|mininteger|modf|pi|pow|rad|random|randomseed|sin|sqrt|tan|tointeger|type|ult)\\b"
-                            - identifier: "os\\.\\b(clock|date|difftime|execute|exit|getenv|remove|rename|setlocale|time|tmpname)\\b"
-                            - identifier: "package\\.\\b(config|cpath|loaded|loadlib|path|preload|seeall|searchers|searchpath)\\b"
-                            - identifier: "string\\.\\b(byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
-                            - identifier: "table\\.\\b(concat|insert|maxn|move|pack|remove|sort|unpack)\\b"
-                            - identifier: "utf8\\.\\b(char|charpattern|codes|codepoint|len|offset)\\b"
-                            - identifier: "coroutine\\.\\b(create|isyieldable|resume|running|status|wrap|yield)\\b"
-                            - identifier: "debug\\.\\b(debug|getfenv|gethook|getinfo|getlocal|getmetatable|getregistry|getupvalue|getuservalue|setfenv|sethook|setlocal|setmetatable|setupvalue|setuservalue|traceback|upvalueid|upvaluejoin)\\b"
-                            - identifier: "bit32\\.\\b(arshift|band|bnot|bor|btest|bxor|extract|replace|lrotate|lshift|rrotate|rshift)\\b"
-                            - identifier: "(::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
-                            - constant: "\\b(false|nil|true)\\b"
-                            - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
-                            - type.keyword: "\\b(close|const|global|local)\\b" # Variable declarations
-                            - statement: "\\b(unless|import|export|as|from|try|catch|macro|class|extends|using|with|switch|when)\\b"
-                            - identifier.class: "\\b[A-Z][a-zA-Z]*\\b"
-                            - constant: "\\b[A-Z]*\\b"
-                            - special: "\\b(super)\\b"
-                            - special: "\\b(self|cls)\\b"
-                            - special: "\\b(opts|args)\\b" # It's a convention in Lua to use these for table arguments
-                            - special: "\\b(_|__)private\\b" # It's also a convention to use a table caleld _private or __private to store private/internal data
-                            #- error: "\\b_[a-zA-Z_]+?_[0-9]+?\\b" # Although it's not actually an error to use variable names like `_export_0`, it is discurraged because names like that should only be used by the Yuescript compiler
-
-                            # `function` and `end` cannot be used as keywords or variables names,
-                            # but they *are* allowed when used as table keys.
-                            - error:   "\\b(function|end)\\b"
-                            - default: "\\b(function|end)\\s*:"
-
-                            - symbol.brackets: "[(){}\\[\\]]"
-                            - symbol.operator: "(\\*|//|/|%|\\+|-|>|>=|<|<=|~=|!=|!|=|[\\.]{2,3}|#|->|=>|<-|[:]{1,2}|\\?{1,2}|\\|\\>)"
-                            - symbol.operator: "\\^" # For some reason, it causes issues to have this in the pattern above
-
-                            # Metatable keys
-                            - special: "\\b__(index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b"
-                            # Yuescript only allows the metatable events recognized by Lua itself (see https://lua-users.org/wiki/MetatableEvents)
-                            # when using angle brackets, everything else causes an error. Note that `<>` on its own is allowed.
-                            - error: "\\<.*?\\>"
-                            - symbol.tag: "\\<(|index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\>"
-
-                            # Special fileds of classes
-                            - special: "\\b__(init|class|base|name|parent)\\b"
-
-                            - constant.number: "\\b((0[xX](([0-9A-Fa-f_]+\\.[0-9A-Fa-f_]*)|(\\.?[0-9A-Fa-f_]+))([pP][-+]?[0-9_]+)?)|((([0-9_]+\\.[0-9_]*)|(\\.?[0-9_]+))([eE][-+]?[0-9_]+)?))"    
-
-                            - identifier.macro: "\\$\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
-                            - identifier: "@(\\.|\\:\\:|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*" # self
-                            - identifier: "@"
-                            - constant: "@@(\\.|\\:\\:|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*" # self.__class
-                            - constant: "@@"
-                            - error: "@@@+(\\.|\\:\\:|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*"
-                            - error: "@@@+"
-
-                            - constant.string:
-                                start: "\'"
-                                end: "\'"
-                                skip: "\\\\."
-                                rules:
-                                    - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
-
+            #- constant.string: "#\\{\\}"
+            - identifier: "#\\{.+?\\}"
+            #       - start: "#\\{"
+            #       - end: "\\}"
+            #       - rules:
+            #             - normal: ".*?"
 
     - constant.string:
         start: "\'"
