@@ -28,7 +28,7 @@ rules:
     - identifier: "(\\.|::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
     - constant.bool.true: "\\btrue\\b"
     - constant.bool.false: "\\bnull\\b"
-    - constant: "\\b(false|nil|true)\\b"
+    - constant: "\\b(nil)\\b"
     - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
     - type.keyword: "\\b(close|const|global|local)\\b" # Variable declarations
     - identifier.class: "\\b[A-Z][a-zA-Z]*\\b"
