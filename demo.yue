@@ -55,6 +55,7 @@ for k, v in _G.pairs({ "first", "second", "thrid" })
 local  loc = "I am local"
 global GLO = "I am global"
 const  CON = "I am constant"
+close  clo = "My .<close> meta-method will be called"
 class  Foo
 
 goto jmp
@@ -138,9 +139,51 @@ i /= 1
 i //= 1
 i %= 1
 i ^= 1
+i &= 1
 i |= 1
 i ??= 1
 i or= 1
 i and= 1
 i >>= 1
 i <<= 1
+
+do
+	const f = (a, func, b) ->
+		print(a)
+		func("second")
+		print(b)
+
+	(x) <- f("first", _, "third")
+
+	print(x)
+
+x.<index>
+x.<newindex>
+x.<mode>
+x.<call>
+x.<metatable>
+x.<tostring>
+x.<len>
+x.<pairs>
+x.<ipairs>
+x.<gc>
+x.<name>
+x.<close>
+x.<unm>
+x.<add>
+x.<sub>
+x.<mul>
+x.<div>
+x.<idiv>
+x.<mod>
+x.<pow>
+x.<concat>
+x.<band>
+x.<bor>
+x.<bxor>
+x.<bnot>
+x.<shl>
+x.<shr>
+x.<eq>
+x.<lt>
+x.<le>

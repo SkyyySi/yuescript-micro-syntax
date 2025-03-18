@@ -5,23 +5,23 @@ detect:
     header: "#!.*yue$"
 
 rules:
-    - error: "\\b([0-9][a-zA-Z0-9_]*)\\b"
+    - error: "\\b([\\pN][_\\pL\\pN]*)\\b"
 
     - symbol.brackets: "[(){}\\[\\]]"
     - symbol.operator: "="
     - symbol.operator: "#|~|\\-|!|\\?"
-    - symbol.operator: "(\\^|\\*|\\+|\\-|<|>|//|/|%|\\||~|<<|>>|\\?\\?|\\band|\\bor)=?"
+    - symbol.operator: "(\\^|\\*|\\+|\\-|<|>|//|/|%|\\||~|&|<<|>>|\\?\\?|\\band|\\bor)=?"
     - symbol.operator: "(~|!)="
     - symbol.operator: "\\.{2}"
+    - symbol.operator: "\\->|=>|<\\-|\\|>"
     - symbol.operator: "\\[\\]\\s*="
-    - special: "->|=>|<-|\\|>"
 
     - symbol.constant: "\\.{3}"
     - error: "\\.{4,}"
 
     - constant.number: "\\b((0[xX](([0-9A-Fa-f][0-9A-Fa-f_]*\\.([0-9A-Fa-f][0-9A-Fa-f_]*|))|(\\.?[0-9A-Fa-f_]+))([pP][-+]?[0-9_]+)?)|((([0-9][0-9_]*\\.([0-9][0-9_]*|))|(\\.?([0-9][0-9_]*|)))([eE][-+]?([0-9][0-9_]*|))?))\\b"
 
-    - identifier.var: "\\b[a-zA-Z_]([a-zA-Z0-9_]+|::|\\.|\\\\)*\\b"
+    - identifier.var: "\\b[_\\pL]([_\\pL\\pN]+|::|\\.|\\\\)*\\b"
 
     # `function` and `end` cannot be used as keywords or variables names,
     # but they *are* allowed when used as table keys.
@@ -35,17 +35,20 @@ rules:
     - identifier.var: "::"
     - error: ":::+"
 
-    # Yuescript only allows the metatable events recognized by Lua itself (see https://lua-users.org/wiki/MetatableEvents)
-    # when using angle brackets, everything else causes an error. Note that `<>` on its own is allowed.
-    # You may also put string literals in there.
+    - type.keyword: "\\b(class|close|const|global|local|macro)\\b"
+
+    # Yuescript only allows the metatable events recognized by Lua itself
+    # (see https://lua-users.org/wiki/MetatableEvents) when using angle
+    # brackets, everything else causes an error. Note that `<>` on its own is
+    # allowed. You may also put string literals in there.
     - error: "<[^\"'\\[].*>"
-    - symbol.tag: "(\\.|::|\\\\)<\\b(|index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>"
-    - symbol.tag:              "<\\b(|index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>:"
+    - symbol.tag: "(\\.|::|\\\\)<\\b(|index|newindex|mode|call|metatable|tostring|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>"
+    - symbol.tag:              "<\\b(|index|newindex|mode|call|metatable|tostring|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>:"
 
-    - constant: "\\bgoto\\b\\s+\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b"
-    - constant: "::\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b::"
+    - constant: "\\bgoto\\b\\s+\\b([_\\pL][_\\pL\\pN]*)\\b"
+    - constant: "::\\b([_\\pL][_\\pL\\pN]*)\\b::"
 
-    - identifier.class: "\\b([A-Z][a-zA-Z0-9]*)\\b"
+    - identifier.class: "\\b([A-Z][\\pL\\pN]*)\\b"
     - constant: "\\b[A-Z_][A-Z0-9_]*\\b"
 
     - constant: "(\\b_G\\b\\.)?\\b(_ENV|_G|_VERSION|assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadstring|loadfile|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|xpcall|newproxy|gcinfo)\\b"
@@ -63,7 +66,6 @@ rules:
     - constant: "(::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
     - statement: "\\b(do|while|break|repeat|until|if|elseif|then|else|for|in|return|goto)\\b"
     - statement: "\\b(unless|import|export|as|from|try|catch|extends|using|with|switch|when)\\b"
-    - type.keyword: "\\b(class|close|const|global|local|macro)\\b"
     - symbol.operator: "\\b(not|and|or)\\b"
     - constant.bool.true: "\\b(true)\\b"
     - constant.bool.false: "\\b(false)\\b"
@@ -71,10 +73,10 @@ rules:
     - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
     - special: "\\b(super|self|cls)\\b"
 
-    - identifier.macro: "\\$\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
-    - identifier: "@((\\.|::|\\\\)?\\b[a-zA-Z_][a-zA-Z0-9_]*\\b)?" # self
-    - constant:  "@@((\\.|::|\\\\)?\\b[a-zA-Z_][a-zA-Z0-9_]*\\b)?" # self.__class
-    - error:   "@@@+((\\.|::|\\\\)?\\b[a-zA-Z_][a-zA-Z0-9_]*\\b)?"
+    - identifier.macro: "\\$\\b[_\\pL][_\\pL\\pN]*\\b"
+    - identifier: "@((\\.|::|\\\\)?\\b[_\\pL][_\\pL\\pN]*\\b)?" # self
+    - constant:  "@@((\\.|::|\\\\)?\\b[_\\pL][_\\pL\\pN]*\\b)?" # self.__class
+    - error:   "@@@+((\\.|::|\\\\)?\\b[_\\pL][_\\pL\\pN]*\\b)?"
 
     # Special fileds of classes
     - special: "\\b__(init|class|base|name|parent)\\b"
@@ -138,7 +140,7 @@ rules:
         start: "(^|[^\\-])\\-\\-\\-@"
         end: "$"
         rules:
-            - error: "[a-zA-Z_][a-zA-Z0-9_]*"
+            - error: "[_\\pL][_\\pL\\pN]*"
             - statement:
                 start: "\\b(alias|as|async|cast|class|deprecated|diagnostic|enum|field|generic|meta|module|nodiscard|operator|overload|package|param|private|protected|return|see|source|type|vararg|version)\\b"
                 end: "$"
