@@ -8,7 +8,14 @@ rules:
     - error: "\\b([0-9][a-zA-Z0-9_]*)\\b"
 
     - symbol.brackets: "[(){}\\[\\]]"
-    - symbol.operator: "(\\^|\\*|//|/|%|\\+|\\-|\\>|\\>=|\\<|\\<=|\\~=|\\!=|\\!|=|\\.{2}|#|-\\>|=\\>|\\<-|:|\\?{1,2}|\\|\\>)"
+    - symbol.operator: "="
+    - symbol.operator: "#|~|\\-|!|\\?"
+    - symbol.operator: "(\\^|\\*|\\+|\\-|<|>|//|/|%|\\||~|<<|>>|\\?\\?|\\band|\\bor)=?"
+    - symbol.operator: "(~|!)="
+    - symbol.operator: "\\.{2}"
+    - symbol.operator: "\\[\\]\\s*="
+    - special: "->|=>|<-|\\|>"
+
     - symbol.constant: "\\.{3}"
     - error: "\\.{4,}"
 
@@ -18,13 +25,29 @@ rules:
 
     # `function` and `end` cannot be used as keywords or variables names,
     # but they *are* allowed when used as table keys.
-    - error: "(^|[^\\.:\\\\])\\b(function|end)\\b\\s*([^:]|$)"
+    - error: "\\b(function|end)\\b"
+    - identifier.var: "(::|\\.|\\\\)\\b(function|end)\\b"
+    - identifier.var: "\\b(function|end)\\b\\s*:"
 
     - constant: "\\bnew\\b\\s*:"
-    - identifier: "\\bgoto\\b\\s+\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b"
-    - identifier: "::\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b::"
+
+    - symbol.operator: ":"
+    - identifier.var: "::"
+    - error: ":::+"
+
+    # Yuescript only allows the metatable events recognized by Lua itself (see https://lua-users.org/wiki/MetatableEvents)
+    # when using angle brackets, everything else causes an error. Note that `<>` on its own is allowed.
+    # You may also put string literals in there.
+    - error: "<[^\"'\\[].*>"
+    - symbol.tag: "(\\.|::|\\\\)<\\b(|index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>"
+    - symbol.tag:              "<\\b(|index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>:"
+
+    - constant: "\\bgoto\\b\\s+\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b"
+    - constant: "::\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b::"
+
     - identifier.class: "\\b([A-Z][a-zA-Z0-9]*)\\b"
     - constant: "\\b[A-Z_][A-Z0-9_]*\\b"
+
     - constant: "(\\b_G\\b\\.)?\\b(_ENV|_G|_VERSION|assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadstring|loadfile|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|xpcall|newproxy|gcinfo)\\b"
     - constant: "(\\b_G\\b\\.)?\\b(debug|string|math|table|io|coroutine|os|package|utf8|bit32)\\b"
     - constant: "(\\b_G\\b\\.)?\\bdebug\\b\\.\\b(debug|getfenv|gethook|getinfo|getlocal|getmetatable|getregistry|getupvalue|getuservalue|setfenv|sethook|setlocal|setmetatable|setupvalue|setuservalue|traceback|upvalueid|upvaluejoin)\\b"
@@ -48,20 +71,10 @@ rules:
     - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
     - special: "\\b(super|self|cls)\\b"
 
-    # Yuescript only allows the metatable events recognized by Lua itself (see https://lua-users.org/wiki/MetatableEvents)
-    # when using angle brackets, everything else causes an error. Note that `<>` on its own is allowed.
-    # You may also put string literals in there.
-    - symbol.tag:
-        start: "\\<"
-        end: "\\>"
-        rules:
-            - error: "^[^\"'\\[].*$"
-            - symbol.tag: "\\b(index|newindex|mode|call|metatable|tostring|tonumber|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b"
-
     - identifier.macro: "\\$\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
-    - identifier: "@((\\.|::|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*)?" # self
-    - constant:  "@@((\\.|::|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*)?" # self.__class
-    - error:   "@@@+((\\.|::|\\\\)?[a-zA-Z_][a-zA-Z0-9_]*)?"
+    - identifier: "@((\\.|::|\\\\)?\\b[a-zA-Z_][a-zA-Z0-9_]*\\b)?" # self
+    - constant:  "@@((\\.|::|\\\\)?\\b[a-zA-Z_][a-zA-Z0-9_]*\\b)?" # self.__class
+    - error:   "@@@+((\\.|::|\\\\)?\\b[a-zA-Z_][a-zA-Z0-9_]*\\b)?"
 
     # Special fileds of classes
     - special: "\\b__(init|class|base|name|parent)\\b"
@@ -74,6 +87,7 @@ rules:
         end: "\""
         skip: "\\\\."
         rules:
+            - error: "\\\\."
             - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
             - identifier: "#\\{.+?\\}"
 
@@ -82,6 +96,7 @@ rules:
         end: "'"
         skip: "\\\\."
         rules:
+            - error: "\\\\."
             - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
 
     - constant.string:

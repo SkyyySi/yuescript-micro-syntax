@@ -62,22 +62,30 @@ goto jmp
 
 f = (x, y, z, ...) -> print(select("#", ...))
 
-x.<"foo">
+print x.<name>
+print x\<index>
+print x.<"foo">
 
 --[[
 Multi-line comment
 ]]
 
+$i_am_macro()
+
 -- Not valid!
 ....
 function
 end
-<bruh>
+x.<foo>
 10number_with_illeal_suffix
+x:::y()
+"\a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u{0000}\v\w\x\y\z"
+"\A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U{0000}\V\W\X\Y\Z"
 
 table =
 	function: "foo"
 	end: "bar"
+	already_legal: "biz baz"
 
 ---@class Man asdf
 class Man
@@ -100,3 +108,39 @@ assert(""::sub(1, 1) != x)
 function you_cannot_use_these_keywords_in_yuescript()
 	-- ...
 end
+
+"Test" |> print
+
+print @foo.bar()
+print @foo::bar()
+print @foo\bar()
+
+list[] = "Appended"
+
+func!
+func()
+
+print x.y
+print x::y
+print x\y
+
+print i ~= j
+print i != j
+
+print #i
+print -i
+print ~i
+
+i += 1
+i -= 1
+i *= 1
+i /= 1
+i //= 1
+i %= 1
+i ^= 1
+i |= 1
+i ??= 1
+i or= 1
+i and= 1
+i >>= 1
+i <<= 1
