@@ -125,6 +125,12 @@ print x.y
 print x::y
 print x\y
 
+print x.test
+print x.Test
+print x.TEST
+print x.for
+print x.const
+
 print i ~= j
 print i != j
 
