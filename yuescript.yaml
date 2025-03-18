@@ -35,22 +35,13 @@ rules:
     - identifier.var: "::"
     - error: ":::+"
 
-    - type.keyword: "\\b(class|close|const|global|local|macro)\\b"
-
-    # Yuescript only allows the metatable events recognized by Lua itself
-    # (see https://lua-users.org/wiki/MetatableEvents) when using angle
-    # brackets, everything else causes an error. Note that `<>` on its own is
-    # allowed. You may also put string literals in there.
-    - error: "<[^\"'\\[].*>"
-    - symbol.tag: "(\\.|::|\\\\)<\\b(|index|newindex|mode|call|metatable|tostring|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>"
-    - symbol.tag:              "<\\b(|index|newindex|mode|call|metatable|tostring|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>:"
-
     - constant: "\\bgoto\\b\\s+\\b([_\\pL][_\\pL\\pN]*)\\b"
     - constant: "::\\b([_\\pL][_\\pL\\pN]*)\\b::"
 
     - identifier.class: "\\b([A-Z][\\pL\\pN]*)\\b"
     - constant: "\\b[A-Z_][A-Z0-9_]*\\b"
 
+    - type.keyword: "\\b(class|close|const|global|local|macro)\\b"
     - constant: "(\\b_G\\b\\.)?\\b(_ENV|_G|_VERSION|assert|collectgarbage|dofile|error|getfenv|getmetatable|ipairs|load|loadstring|loadfile|module|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setfenv|setmetatable|tonumber|tostring|type|unpack|xpcall|newproxy|gcinfo)\\b"
     - constant: "(\\b_G\\b\\.)?\\b(debug|string|math|table|io|coroutine|os|package|utf8|bit32)\\b"
     - constant: "(\\b_G\\b\\.)?\\bdebug\\b\\.\\b(debug|getfenv|gethook|getinfo|getlocal|getmetatable|getregistry|getupvalue|getuservalue|setfenv|sethook|setlocal|setmetatable|setupvalue|setuservalue|traceback|upvalueid|upvaluejoin)\\b"
@@ -77,6 +68,14 @@ rules:
     - identifier: "@((\\.|::|\\\\)?\\b[_\\pL][_\\pL\\pN]*\\b)?" # self
     - constant:  "@@((\\.|::|\\\\)?\\b[_\\pL][_\\pL\\pN]*\\b)?" # self.__class
     - error:   "@@@+((\\.|::|\\\\)?\\b[_\\pL][_\\pL\\pN]*\\b)?"
+
+    # Yuescript only allows the metatable events recognized by Lua itself
+    # (see https://lua-users.org/wiki/MetatableEvents) when using angle
+    # brackets, everything else causes an error. Note that `<>` on its own is
+    # allowed. You may also put string literals in there.
+    - error: "<[^\"'\\[].*>"
+    - symbol.tag: "(\\.|::|\\\\)<\\b(|index|newindex|mode|call|metatable|tostring|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>"
+    - symbol.tag:              "<\\b(|index|newindex|mode|call|metatable|tostring|len|pairs|ipairs|gc|name|close|unm|add|sub|mul|div|idiv|mod|pow|concat|band|bor|bxor|bnot|shl|shr|eq|lt|le)\\b>:"
 
     # Special fileds of classes
     - special: "\\b__(init|class|base|name|parent)\\b"
