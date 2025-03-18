@@ -35,7 +35,7 @@ rules:
     - constant: "(\\b_G\\b\\.)?\\bcoroutine\\b\\.\\b(create|isyieldable|resume|running|status|wrap|yield)\\b"
     - constant: "(\\b_G\\b\\.)?\\bos\\b\\.\\b(clock|date|difftime|execute|exit|getenv|remove|rename|setlocale|time|tmpname)\\b"
     - constant: "(\\b_G\\b\\.)?\\bpackage\\b\\.\\b(config|cpath|loaded|loadlib|path|preload|seeall|searchers|searchpath)\\b"
-    - constant: "\\butf8\\b\\.\\b(char|charpattern|codes|codepoint|len|offset)\\b"
+    - constant: "(\\b_G\\b\\.)?\\butf8\\b\\.\\b(char|charpattern|codes|codepoint|len|offset)\\b"
     - constant: "\\bbit32\\b\\.\\b(arshift|band|bnot|bor|btest|bxor|extract|replace|lrotate|lshift|rrotate|rshift)\\b"
     - constant: "(::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
     - statement: "\\b(do|while|break|repeat|until|if|elseif|then|else|for|in|return|goto)\\b"
