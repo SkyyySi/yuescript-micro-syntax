@@ -5,15 +5,52 @@ detect:
     header: "#!.*yue$"
 
 rules:
+    # Variable names cannot start with a number
     - error: "\\b([\\pN][_\\pL\\pN]*)\\b"
 
-    - symbol.brackets: "[(){}\\[\\]]"
+    - symbol.brackets: "[\\(\\){}\\[\\]]"
+
+    # Assignment operator
     - symbol.operator: "="
+
+    # Unary operators
+    #   * Length
+    #   * Bitwise NOT
+    #   * Minus
+    #   * Function/method call
+    #   * Existance/non-nil check
     - symbol.operator: "#|~|\\-|!|\\?"
-    - symbol.operator: "(\\^|\\*|\\+|\\-|<|>|//|/|%|\\||~|&|<<|>>|\\?\\?|\\band|\\bor)=?"
-    - symbol.operator: "(~|!)="
-    - symbol.operator: "\\.{2}"
+
+    # Binary and update-assignment operators
+    #   * Exponentiation (a ^ b)
+    #   * Multiplication (a * b)
+    #   * Addition (a + b)
+    #   * Subtraction (a - b)
+    #   * Intiger division (a // b)
+    #   * Floating-point division (a / b)
+    #   * Modulo (a % b)
+    #   * Bitwise OR (a | b)
+    #   * Bitwise XOR/exclusive OR (a ~ b)
+    #   * Bitwise AND (a & b)
+    #   * Bitwise left-shift (a << b)
+    #   * Bitwise right-shift (a >> b)
+    #   * Nil-coalessing (a ?? b)
+    #   * Concatenation (a .. b)
+    - symbol.operator: "(\\^|\\*|\\+|\\-|//|/|%|\\||~|&|<<|>>|\\?\\?|\\.\\.)=?"
+    - symbol.operator: "\\b(?:and|or)(?:\\b|=)"
+
+    # Numeric comparison operators
+    - symbol.operator: "<|<=|>|>="
+
+    # Equals operator
+    - symbol.operator: "=="
+
+    # Not-equals operator
+    - symbol.operator: "~=|!="
+
+    # Function, method, back-call and pipeline
     - symbol.operator: "\\->|=>|<\\-|\\|>"
+    # Table appending
     - symbol.operator: "\\[\\]\\s*="
 
     - symbol.constant: "\\.{3}"
@@ -26,7 +63,7 @@ rules:
     # `function` and `end` cannot be used as keywords or variables names,
     # but they *are* allowed when used as table keys.
     - error: "\\b(function|end)\\b"
-    - identifier.var: "(::|\\.|\\\\)\\b(function|end)\\b"
+    - identifier.var: "(::|\\.|\\\\)(function|end)\\b"
     - identifier.var: "\\b(function|end)\\b\\s*:"
 
     - constant: "\\bnew\\b\\s*:"
@@ -42,8 +79,8 @@ rules:
     - constant: "\\b[A-Z_][A-Z0-9_]*\\b"
 
     - type.keyword: "\\b(class|close|const|global|local|macro)\\b"
-    - statement: "\\b(do|while|break|repeat|until|if|elseif|then|else|for|in|return|goto)\\b"
-    - statement: "\\b(continue|unless|import|export|as|from|try|catch|extends|using|with|switch|when)\\b"
+    - statement.reserved: "\\b(do|while|break|repeat|until|if|elseif|then|else|for|in|return|goto)\\b"
+    - statement.reserved: "\\b(continue|unless|import|export|as|from|try|catch|extends|using|with|switch|when)\\b"
     - constant.bool.true: "\\b(true)\\b"
     - constant.bool.false: "\\b(false)\\b"
     - constant: "\\bnil\\b"
@@ -65,6 +102,8 @@ rules:
     - constant: "(\\b_G\\b\\.)*\\butf8\\b\\.\\b(char|charpattern|codes|codepoint|len|offset)\\b"
     - constant: "(\\b_G\\b\\.)*\\bbit32\\b\\.\\b(arshift|band|bnot|bor|btest|bxor|extract|replace|lrotate|lshift|rrotate|rshift)\\b"
     #- constant: "(::|\\\\)\\b(close|flush|lines|read|seek|setvbuf|write|byte|char|dump|find|format|gmatch|gsub|len|lower|match|pack|packsize|rep|reverse|sub|unpack|upper)\\b"
+
+    - constant: "\\blpeg(?:label)?\\b(?:\\.\\b(?:P|S|B|V)\\b)?"
 
     - statement: "(\\b%q|%!|%Q|%r|%x)\\b"
 
@@ -93,7 +132,7 @@ rules:
         skip: "\\\\."
         rules:
             - error: "\\\\."
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
+            - constant.specialChar: "\\\\([abfnrtvz\\'\"\\\\]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
             - identifier: "#\\{.+?\\}"
 
     - constant.string:
@@ -102,7 +141,7 @@ rules:
         skip: "\\\\."
         rules:
             - error: "\\\\."
-            - constant.specialChar: "\\\\([abfnrtvz\\'\"]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
+            - constant.specialChar: "\\\\([abfnrtvz\\'\"\\\\]|[0-9]{1,3}|x[0-9a-fA-F][0-9a-fA-F]|u\\{[0-9a-fA-F]+\\})"
 
     - constant.string:
         start: "\\[\\["
